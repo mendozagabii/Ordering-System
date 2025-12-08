@@ -1,0 +1,869 @@
+:root {
+    --primary: #ef4444; /* red */
+    --primary-dark: #dc2626; /* darker red */
+    --secondary: #f97316; /* orange */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --background: #0f172a;
+    --surface: #1e293b;
+    --surface-light: #334155;
+    --text: #ffffff;
+    --text-light: #e5e7eb;
+    --border: #475569;
+    --gradient: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+    --gradient-dark: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.4);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+/* Modern Particle Background */
+.particle-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    overflow: hidden;
+}
+
+.particles-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.particle {
+    position: absolute;
+    background: var(--gradient);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleFloat 8s infinite ease-in-out;
+}
+
+/* Food icon particles (font-awesome icons) */
+.particle-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle-icon {
+    position: absolute;
+    color: rgba(255,255,255,0.20); /* make icons more visible */
+    text-shadow: 0 6px 14px rgba(0,0,0,0.6);
+    transform-origin: center;
+    opacity: 0;
+    animation: floatUp 10s linear infinite, fadeInOut 10s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Individual particle placement, size and timing */
+.particle-background .particle-icon:nth-of-type(1) { left: 8%;  top: 78%; font-size: 36px; animation-delay: 0s; color: rgba(239,68,68,0.26); }
+.particle-background .particle-icon:nth-of-type(2) { left: 22%; top: 20%; font-size: 30px; animation-delay: -2s; color: rgba(249,115,22,0.24); }
+.particle-background .particle-icon:nth-of-type(3) { left: 40%; top: 55%; font-size: 32px; animation-delay: -4s; color: rgba(255,255,255,0.18); }
+.particle-background .particle-icon:nth-of-type(4) { left: 60%; top: 10%; font-size: 38px; animation-delay: -6s; color: rgba(239,68,68,0.28); }
+.particle-background .particle-icon:nth-of-type(5) { left: 78%; top: 65%; font-size: 34px; animation-delay: -1s; color: rgba(249,115,22,0.26); }
+.particle-background .particle-icon:nth-of-type(6) { left: 12%; top: 30%; font-size: 28px; animation-delay: -3s; color: rgba(239,68,68,0.22); }
+.particle-background .particle-icon:nth-of-type(7) { left: 30%; top: 85%; font-size: 24px; animation-delay: -5s; color: rgba(249,115,22,0.20); }
+.particle-background .particle-icon:nth-of-type(8) { left: 50%; top: 40%; font-size: 30px; animation-delay: -7s; color: rgba(255,255,255,0.18); }
+.particle-background .particle-icon:nth-of-type(9) { left: 70%; top: 28%; font-size: 28px; animation-delay: -9s; color: rgba(239,68,68,0.18); }
+.particle-background .particle-icon:nth-of-type(10){ left: 88%; top: 48%; font-size: 32px; animation-delay: -2.5s; color: rgba(249,115,22,0.22); }
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0; }
+    10% { opacity: 1; }
+    50% { transform: translateY(-60px) rotate(12deg) scale(1.05); }
+    90% { opacity: 1; }
+    100% { transform: translateY(-140px) rotate(-8deg) scale(0.95); opacity: 0; }
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    8% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* make sure login card sits above particles */
+.login-container { z-index: 2; }
+
+/* ensure login card always sits above particles */
+.login-card { z-index: 3; position: relative; }
+
+.particle:nth-child(1) {
+    width: 4px;
+    height: 4px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+    background: var(--primary);
+}
+
+.particle:nth-child(2) {
+    width: 6px;
+    height: 6px;
+    top: 60%;
+    left: 85%;
+    animation-delay: -2s;
+    background: var(--secondary);
+}
+
+.particle:nth-child(3) {
+    width: 3px;
+    height: 3px;
+    top: 80%;
+    left: 20%;
+    animation-delay: -4s;
+    background: var(--success);
+}
+
+.particle:nth-child(4) {
+    width: 5px;
+    height: 5px;
+    top: 30%;
+    left: 70%;
+    animation-delay: -6s;
+    background: var(--warning);
+}
+
+.particle:nth-child(5) {
+    width: 4px;
+    height: 4px;
+    top: 10%;
+    left: 50%;
+    animation-delay: -1s;
+    background: var(--primary);
+}
+
+.particle:nth-child(6) {
+    width: 6px;
+    height: 6px;
+    top: 70%;
+    left: 30%;
+    animation-delay: -3s;
+    background: var(--secondary);
+}
+
+.particle:nth-child(7) {
+    width: 3px;
+    height: 3px;
+    top: 40%;
+    left: 90%;
+    animation-delay: -5s;
+    background: var(--success);
+}
+
+.particle:nth-child(8) {
+    width: 5px;
+    height: 5px;
+    top: 90%;
+    left: 60%;
+    animation-delay: -7s;
+    background: var(--warning);
+}
+
+/* Animated Grid Background */
+.animated-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, var(--background) 21px, transparent 1%) center,
+        linear-gradient(var(--background) 21px, transparent 1%) center,
+        rgba(239, 68, 68, 0.03);
+    background-size: 22px 22px;
+    animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(11px, 11px);
+    }
+}
+
+/* Floating Shapes */
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--gradient);
+    opacity: 0.03;
+    animation: shapeFloat 25s infinite linear;
+    filter: blur(20px);
+}
+
+.shape:nth-child(1) {
+    width: 400px;
+    height: 400px;
+    top: -200px;
+    left: -200px;
+    animation-delay: 0s;
+}
+
+.shape:nth-child(2) {
+    width: 300px;
+    height: 300px;
+    bottom: -150px;
+    right: 10%;
+    animation-delay: -8s;
+}
+
+.shape:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    top: 20%;
+    right: -125px;
+    animation-delay: -16s;
+}
+
+.shape:nth-child(4) {
+    width: 350px;
+    height: 350px;
+    bottom: 20%;
+    left: -175px;
+    animation-delay: -12s;
+}
+
+@keyframes shapeFloat {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translate(50px, -30px) rotate(90deg) scale(1.1);
+    }
+    50% {
+        transform: translate(-30px, 40px) rotate(180deg) scale(0.9);
+    }
+    75% {
+        transform: translate(-20px, -50px) rotate(270deg) scale(1.05);
+    }
+}
+
+@keyframes particleFloat {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(0) scale(0);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(-100px) scale(1);
+    }
+}
+
+/* Glow Effects */
+.glow-effect {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+    animation: glowPulse 8s ease-in-out infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.glow-effect:nth-child(2) {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.08) 0%, transparent 70%);
+    animation-delay: -4s;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* Scan Lines Effect */
+.scan-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+    animation: scanMove 2s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scanMove {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+.login-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.login-card {
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: var(--radius);
+    box-shadow: 
+        var(--shadow-lg),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gradient);
+    animation: borderGlow 3s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.brand-section {
+    background: var(--gradient);
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    animation: backgroundShift 10s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: logoFloat 6s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-5px) rotate(2deg);
+    }
+    66% {
+        transform: translateY(5px) rotate(-2deg);
+    }
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.brand-section h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: white;
+    position: relative;
+    display: inline-block;
+}
+
+.brand-section h1::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 25%;
+    width: 50%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.5);
+    animation: titleUnderline 3s ease-in-out infinite;
+}
+
+@keyframes titleUnderline {
+    0%, 100% {
+        transform: scaleX(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scaleX(1.2);
+        opacity: 1;
+    }
+}
+
+.brand-section p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+}
+
+.form-section {
+    padding: 40px 30px;
+}
+
+/* Rest of your existing CSS remains the same */
+.tabs {
+    display: flex;
+    background: var(--surface-light);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    border-radius: 8px;
+    z-index: 1;
+    color: var(--text-light);
+}
+
+.tab.active {
+    color: var(--text);
+}
+
+.tab-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    width: calc(50% - 8px);
+    background: var(--gradient);
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.tab-indicator.register {
+    transform: translateX(100%);
+}
+
+.auth-form {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px 16px 16px 48px;
+    background: var(--surface-light);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.input-group input:focus + i {
+    color: var(--primary);
+}
+
+.toggle-password {
+    position: absolute;
+    left: 290px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.toggle-password:hover {
+    color: var(--text);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 16px 24px;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.demo-accounts {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border);
+}
+
+.demo-accounts h3 {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.demo-account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface-light);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.demo-account:hover {
+    background: var(--surface);
+    border-color: var(--primary);
+    transform: translateX(5px);
+}
+
+.demo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.demo-info span:first-child {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.demo-role {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.demo-account i {
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.demo-account:hover i {
+    color: var(--primary);
+    transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+    .login-card {
+        max-width: 100%;
+        margin: 20px;
+    }
+    
+    .brand-section {
+        padding: 30px 20px;
+    }
+    
+    .form-section {
+        padding: 30px 20px;
+    }
+    
+    .brand-section h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Forgot Password Specific Styles */
+.auth-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.auth-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--surface-light);
+    z-index: 1;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface-light);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    transition: var(--transition);
+}
+
+.step.active .step-number {
+    background: var(--gradient);
+    border-color: var(--primary);
+    color: white;
+}
+
+.step span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.step.active span {
+    color: var(--text);
+}
+
+.step-info {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.resend-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.resend-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.resend-link a:hover {
+    text-decoration: underline;
+}
+
+.demo-code {
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.demo-code h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.demo-code p {
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+.demo-code strong {
+    color: var(--secondary);
+    font-size: 1.1rem;
+}
+
+.demo-code small {
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
+.link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.link a:hover {
+    color: var(--secondary);
+}

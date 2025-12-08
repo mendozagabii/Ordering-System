@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraveItClickIt - Staff Dashboard</title>
+    <link rel="stylesheet" href="staff.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="brand-section">
+                    <div class="logo">
+                        <img src="craveitlogo.png" alt="Logo">
+                    </div>
+                    <h1>Staff Dashboard</h1>
+                </div>
+                <div class="header-actions">
+                    <div class="user-info">
+                        <span id="staff-user-display" class="user-name"></span>
+                        <button id="staff-logout-btn" class="logout-btn" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pending-count">0</h3>
+                        <p>Pending Orders</p>
+                    </div>
+                    <div class="stat-trend up">+12%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon preparing">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="progress-count">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                    <div class="stat-trend up">+8%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon ready">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="ready-count">0</h3>
+                        <p>Ready for Pickup</p>
+                    </div>
+                    <div class="stat-trend down">-3%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="completed-count">0</h3>
+                        <p>Completed Today</p>
+                    </div>
+                    <div class="stat-trend up">+15%</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-section">
+                <h2>Quick Actions</h2>
+                <div class="actions-grid">
+                    <button class="action-btn" onclick="staffApp.refreshOrders()">
+                        <div class="action-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <span>Refresh Orders</span>
+                    </button>
+                    <button class="action-btn" onclick="staffApp.markAllPreparing()">
+                        <div class="action-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <span>Start All</span>
+                    </button>
+                    <button class="action-btn" onclick="staffApp.markAllReady()">
+                        <div class="action-icon">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <span>Mark All Ready</span>
+                    </button>
+                    <button class="action-btn" onclick="staffApp.clearCompleted()">
+                        <div class="action-icon">
+                            <i class="fas fa-broom"></i>
+                        </div>
+                        <span>Clear Completed</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order Management -->
+            <div class="orders-section">
+                <div class="section-header">
+                    <h2>Order Management</h2>
+                    <div class="filter-controls">
+                        <select id="status-filter" onchange="staffApp.filterOrders()">
+                            <option value="all">All Orders</option>
+                            <option value="Order Placed">Pending</option>
+                            <option value="Preparing Food">Preparing</option>
+                            <option value="Ready for Pickup">Ready</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="order-search" placeholder="Search orders...">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="orders-container" class="orders-container">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order Details</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="order-info">
+                    <div class="info-group">
+                        <label>Order ID:</label>
+                        <span id="modal-order-id">-</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Customer:</label>
+                        <span id="modal-customer">-</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Time:</label>
+                        <span id="modal-time">-</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Status:</label>
+                        <span id="modal-status" class="status-badge">-</span>
+                    </div>
+                </div>
+                
+                <div class="order-items">
+                    <h4>Items</h4>
+                    <div id="modal-items" class="items-list">
+                        <!-- Items will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="order-total">
+                    <div class="total-line">
+                        <span>Subtotal:</span>
+                        <span id="modal-subtotal">$0.00</span>
+                    </div>
+                    <div class="total-line">
+                        <span>Service Fee:</span>
+                        <span>₱50.00</span>
+                    </div>
+                    <div class="total-line grand-total">
+                        <span>Total:</span>
+                        <span id="modal-total">$0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="staffApp.closeModal()">Close</button>
+                <button class="btn-primary" id="modal-action-btn" onclick="staffApp.updateOrderStatus()">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="staff.js"></script>
+</body>
+</html>

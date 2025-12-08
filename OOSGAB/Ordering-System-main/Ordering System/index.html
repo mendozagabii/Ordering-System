@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraveItClickIt - Order</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="customer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        /* Landing hero — minimal, local styles so the top shows a welcoming area
+           and users naturally scroll down to the menu below. */
+        .landing-container {
+            min-height: 72vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3rem 1rem;
+            /* Background image (crave.webp) */
+            background-image: url('crave.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* subtle overlay to keep text readable */
+            background-color: rgba(0,0,0,0.35);
+            background-blend-mode: overlay;
+        }
+        .landing-container h1 { font-size: 2.2rem; margin: 0 0 0.5rem; color: var(--text); }
+        .landing-container p { color: var(--text-light); margin: 0 0 1rem; }
+        .landing-container .buttons { display:flex; gap:0.75rem; justify-content:center; }
+        @media (max-width:700px) { .landing-container { padding:2rem 1rem; } }
+            /* Promo modal styles */
+            .promo-modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:1200; }
+            .promo-modal-overlay.open { opacity:1;pointer-events:auto; }
+            .promo-modal { width:min(720px,95%);max-width:720px;background:var(--surface);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.25);transform:translateY(8px) scale(.995);opacity:0;transition:transform .22s ease,opacity .22s ease;overflow:hidden; }
+            .promo-modal-overlay.open .promo-modal { transform:translateY(0) scale(1);opacity:1; }
+            .promo-modal .promo-header { display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid var(--border); }
+            .promo-modal .promo-image { width:100%;height:260px;overflow:hidden;background:#111; }
+            .promo-modal .promo-image img{width:100%;height:100%;object-fit:cover;display:block}
+            .promo-modal .promo-body{padding:1rem}
+            .promo-modal .promo-price{font-weight:800;color:var(--primary);font-size:1.05rem}
+            .promo-modal .promo-actions{display:flex;gap:0.5rem;margin-top:0.75rem}
+            .promo-close{background:transparent;border:0;font-size:1.4rem;cursor:pointer;color:var(--text-light)}
+            /* Compact modifier for small add-to-cart buttons (Best Seller cards) */
+            .add-to-cart.compact {
+                width: auto;
+                padding: 0.42rem 0.9rem;
+                font-size: 0.92rem;
+                border-radius: 8px;
+                gap: 0.45rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 110px;
+            }
+            .add-to-cart.compact i { font-size: 0.95rem; }
+            /* Make modal 'View Menu' look like the top nav link */
+            .promo-modal .nav-link {
+                color: var(--text-light);
+                text-decoration: none;
+                padding: 0.45rem 0.85rem;
+                border-radius: 10px;
+                font-weight: 600;
+                transition: var(--transition);
+                background: transparent;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                border: 1px solid transparent;
+            }
+            .promo-modal .nav-link:hover {
+                background: rgba(255,255,255,0.04);
+                color: white;
+                transform: translateY(-2px);
+            }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="craveitlogo.png" alt="CraveItClickIt Logo">
+                </div>
+                <h1>CraveItClickIt</h1>
+            </div>
+            <!-- Top navigation: Home / Menu / Order / About / Contact / Login -->
+            <nav class="top-nav" aria-label="Main Navigation">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link" href="#menu">Menu</a>
+                <a class="nav-link" href="#about">About Us</a>
+                <a class="nav-link" href="login.html" title="Login / Signup"><i class="fas fa-user-circle" style="font-size:1.05rem;margin-right:6px;"></i>Account</a>
+            </nav>
+            <div class="user-actions">
+                <div class="user-info">
+                    <span id="logged-user-display" class="user-name"></span>
+                </div>
+                <button id="location-btn" class="location-btn" title="Our Location">
+                    <i class="fas fa-map-marker-alt"></i>
+                </button>
+                <button id="track-orders-btn" class="track-orders-btn" title="Track Orders">
+                    <i class="fas fa-truck"></i>
+                </button>
+                <button id="logout-btn" class="logout-btn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+                <div class="cart-icon-container" id="cart-toggle">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="landing-container">
+        <h1>Welcome to CraveItClickIt</h1>
+        <p>Your one-stop solution for delicious cravings!</p>
+        <div class="buttons">
+            <a href="#menu" class="btn">Explore Menu</a>
+        </div>
+    </main>
+
+    <!-- Best seller Section -->
+    <section id="specials" style="max-width:1200px;margin:2rem auto;padding:0 1rem;">
+        <h2 style="color:var(--text);margin-bottom:0.5rem;">Best Seller</h2>
+        <p style="color:var(--text-light);margin-bottom:1rem;">Our most ordered item, find out why everyone keeps coming back!</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;">
+                <article style="background:var(--surface);padding:0.5rem;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="width:100%;height:150px;overflow:hidden;border-radius:10px;">
+                    <img src="https://images.summitmedia-digital.com/spotph/images/2018/05/22/spicedkpopin.jpg" alt="BBQ Skewers" style="width:100%;height:100%;object-fit:cover;display:block;">
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+                    <h3 style="margin:0;color:var(--text);font-size:1.05rem;">Chicken Wings Platter</h3>
+                    <div style="font-weight:800;color:var(--primary);background:rgba(0,0,0,0.03);padding:0.25rem 0.5rem;border-radius:8px;font-size:0.98rem;">₱90.00</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <div style="color:gold;line-height:1;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div style="color:var(--text);font-weight:700;">4.9 ratings</div>
+                    </div>
+                            <button class="add-to-cart compact order-now-btn" data-item-id="1" data-name="Adobo Rice Bowl" data-price="90" data-image="https://www.shutterstock.com/image-photo/filipino-food-belly-pork-hamonado-600nw-760028194.jpg"><i class="fas fa-plus"></i> Order Now</button>
+                    </div>
+                </article>
+
+            <article style="background:var(--surface);padding:0.5rem;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="width:100%;height:150px;overflow:hidden;border-radius:10px;">
+                    <img src="https://eatbook.sg/wp-content/uploads/2024/02/don-lechon-sisig.jpg" alt="BBQ Skewers" style="width:100%;height:100%;object-fit:cover;display:block;">
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+                    <h3 style="margin:0;color:var(--text);font-size:1.05rem;">Sisig Overload</h3>
+                    <div style="font-weight:800;color:var(--primary);background:rgba(0,0,0,0.03);padding:0.25rem 0.5rem;border-radius:8px;font-size:0.98rem;">₱130.00</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <div style="color:gold;line-height:1;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div style="color:var(--text);font-weight:700;">4.9 ratings</div>
+                    </div>
+                        <button class="add-to-cart compact order-now-btn" data-item-id="2" data-name="Sisig Overload" data-price="130" data-image="https://eatbook.sg/wp-content/uploads/2024/02/don-lechon-sisig.jpg"><i class="fas fa-plus"></i> Order Now</button>
+                </div>
+            </article>
+
+            <article style="background:var(--surface);padding:0.5rem;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="width:100%;height:150px;overflow:hidden;border-radius:10px;">
+                    <img src="https://farm8.staticflickr.com/7116/7450311072_40bb43f912_z.jpg" alt="BBQ Skewers" style="width:100%;height:100%;object-fit:cover;display:block;">
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+                    <h3 style="margin:0;color:var(--text);font-size:1.05rem;">BBQ Skewers</h3>
+                    <div style="font-weight:800;color:var(--primary);background:rgba(0,0,0,0.03);padding:0.25rem 0.5rem;border-radius:8px;font-size:0.98rem;">₱75.00</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <div style="color:gold;line-height:1;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div style="color:var(--text);font-weight:700;">4.9 ratings</div>
+                    </div>
+                        <button class="add-to-cart compact order-now-btn" data-item-id="9" data-name="BBQ Skewers" data-price="75" data-image="https://farm8.staticflickr.com/7116/7450311072_40bb43f912_z.jpg"><i class="fas fa-plus"></i> Order Now</button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <main class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Discover Menu</h2>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search dishes...">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Categories</h3>
+                <div class="filter-options">
+                    <label class="filter-option active" data-category="all">
+                        <i class="fas fa-th-large"></i>
+                        <span>All Items</span>
+                    </label>
+                    <label class="filter-option" data-category="filipino">
+                        <i class="fas fa-home"></i>
+                        <span>Filipino Comfort</span>
+                    </label>
+                    <label class="filter-option" data-category="streetfood">
+                        <i class="fas fa-utensils"></i>
+                        <span>Street Food</span>
+                    </label>
+                    <label class="filter-option" data-category="fastfood">
+                        <i class="fas fa-hamburger"></i>
+                        <span>Fast Food Bites</span>
+                    </label>
+                    <label class="filter-option" data-category="sweets">
+                        <i class="fas fa-ice-cream"></i>
+                        <span>Sweet Cravings</span>
+                    </label>
+                    <label class="filter-option" data-category="drinks">
+                        <i class="fas fa-glass-whiskey"></i>
+                        <span>Drinks & Refreshments</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <section id="menu" class="menu-display">
+            <div class="menu-header">
+                <h2>Featured Menu</h2>
+                <div class="menu-stats">
+                    <span id="menu-count">0</span> delicious options
+                </div>
+            </div>
+            <div id="menu-items-container" class="menu-grid">
+                <!-- Menu items will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- About Us Section -->
+    <section id="about" class="about-section" style="max-width:1200px;margin:2rem auto;padding:0 1rem;">
+        <h2 style="color:var(--text);margin-bottom:0.5rem;">About Us</h2>
+        <p style="color:var(--text-light);margin-bottom:1rem;">At CraveItClickIt, we turn your cravings into comfort fast. We serve the local flavors you grew up loving, freshly made and delivered right when you need them. No long lines, no hassle just scroll, click, and enjoy your favorite Filipino dishes in minutes. Every order supports local flavors, local cooks, and the joy of good food made simple. Crave it? Click it. And let the goodness come to you.</p>
+
+        <div class="about-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;">
+            <div class="about-card" id="vision-card">
+                <div class="about-card-header">Our Vision</div>
+                <div class="about-card-body">
+                    <p>To be the easiest and fastest way to satisfy your food cravings. We believe that good food should be simple to order and joyful to eat. Whether you're craving classic comfort food, quick snacks, or something sweet, we make sure your favorite meals are just a few clicks away. We use technology to bring people and food closer making every meal convenient, reliable, and delightful.</p>
+                </div>
+            </div>
+
+            <div class="about-card" id="mission-card">
+                <div class="about-card-header">Our Mission</div>
+                <div class="about-card-body">
+                    <p>Our mission is to deliver delicious food quickly and reliably through a simple, user-friendly app. We offer a wide variety of dishes from local favorites to popular bites so there’s always something for every mood and moment. With easy ordering, clear pricing, and real-time tracking, we take the stress out of mealtime. We’re here to make sure that when you crave something, you can get it without hassle fresh, fast, and fulfilled.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Panel -->
+    <div id="cart-overlay" class="cart-overlay">
+        <div class="cart-panel-centered">
+            <div class="cart-header">
+                <h2>Your Order</h2>
+                <button class="close-btn" id="close-cart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Inline cart notification area (shows validation errors or hints inside the cart) -->
+            <div id="cart-notice" class="cart-notice" aria-live="polite" style="display:none;">
+                <!-- content added dynamically by JavaScript -->
+            </div>
+            
+            <div id="cart-items" class="cart-items">
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h3>Your bag is empty</h3>
+                    <p>Add some delicious items to get started!</p>
+                </div>
+            </div>
+            
+            <div class="cart-summary">
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span>₱<span id="cart-subtotal">0.00</span></span>
+                </div>
+                <div class="summary-line">
+                    <span>Service Fee</span>
+                    <span>₱<span id="cart-fee">50.00</span></span>
+                </div>
+                <div class="summary-line total">
+                    <span>Total</span>
+                    <span>₱<span id="cart-total">0.00</span></span>
+                </div>
+            </div>
+            
+            <!-- Delivery / Contact Details -->
+            <div class="delivery-details-section">
+                <h3>Delivery & Contact</h3>
+                <div class="delivery-fields">
+                    <label class="field-label">
+                        Full Name
+                        <input id="delivery-name" type="text" placeholder="Full name (as recipient)">
+                    </label>
+
+                    <label class="field-label">
+                        Contact Number
+                        <input id="delivery-phone" type="tel" placeholder="+63 9XXXXXXXXX">
+                    </label>
+
+                    <label class="field-label">
+                        Email Address
+                        <input id="delivery-email" type="email" placeholder="name@example.com">
+                    </label>
+
+                    <label class="field-label">
+                        Delivery Address
+                        <textarea id="delivery-address" placeholder="House no., Street, Barangay, City, ZIP code"></textarea>
+                    </label>
+                    
+                    <label class="field-label">
+                        Notes (optional)
+                        <textarea id="delivery-notes" placeholder="Additional notes or delivery instructions (e.g., gate code, landmarks, leave at doorstep)"></textarea>
+                    </label>
+                </div>
+            </div>
+            <!-- Toggle delivery details to save space -->
+            <div class="delivery-toggle-wrapper">
+                <button id="toggle-delivery" class="toggle-delivery">Show delivery details</button>
+            </div>
+
+            <div class="payment-method-section">
+                <h3>Payment Method</h3>
+                <div class="payment-options">
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="Cash on Delivery" checked>
+                        <div class="payment-card">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Cash on Delivery</span>
+                        </div>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="GCash">
+                        <div class="payment-card">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>GCash</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <button id="checkout-btn" class="checkout-btn" disabled>
+                <span class="btn-text">Place Order</span>
+                <span class="btn-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Track Orders Modal -->
+    <div id="track-orders-overlay" class="track-orders-overlay">
+        <div class="track-orders-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-truck"></i> Track Your Orders</h2>
+                <button class="close-btn" id="close-track-orders">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="orders-list" class="orders-list">
+                <div class="empty-orders">
+                    <i class="fas fa-box-open"></i>
+                    <h3>No orders yet</h3>
+                    <p>Start ordering some delicious items!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="location-overlay" class="location-overlay">
+        <div class="location-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-map-marker-alt"></i> Our Location</h2>
+                <button class="close-btn" id="close-location">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="location-content">
+                <div class="location-info">
+                    <h3>CraveItClickIt</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Bagalangit, Mabini, Batangas</p>
+                    <p><i class="fas fa-phone"></i> Contact: +63 905 570 2751</p>
+                    <p><i class="fas fa-clock"></i> Open Daily: 8:00 AM - 10:00 PM</p>
+                </div>
+                
+                <div class="map-container">
+                    <iframe
+                        src="https://www.google.com/maps?q=Bagalangit%2C%20Mabini%2C%20Batangas&output=embed"
+                        width="100%"
+                        height="400"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    <!-- Visual marker overlay: CraveItClickIt placed near AquaVenture resort -->
+                    <div class="map-marker" aria-hidden="true">
+                        <div class="marker-label marker-label-top">CraveItClickIt</div>
+                        <div class="marker-circle"></div>
+                        <div class="marker-label marker-label-bottom">Bagalangit, Mabini, Batangas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Overlay - semantic structure so it inherits system styles -->
+    <div id="order-confirmation-overlay" class="track-orders-overlay">
+        <div class="track-orders-modal confirmation-modal">
+            <div class="modal-header confirmation-header">
+                <h2><i class="fas fa-check-circle"></i> Order Confirmed</h2>
+                <button class="close-btn" id="order-confirm-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="confirmation-body">
+                <p class="confirmation-message">Your order has been placed and sent to the kitchen.</p>
+                <p class="confirmation-sub">Thank you for ordering with us.</p>
+                <div class="confirmation-actions">
+                    <button id="order-confirm-ok" class="confirmation-ok-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- GCash Payment Overlay: shows payment instructions, amount, merchant number and a generated ref -->
+    <div id="gcash-payment-overlay" class="track-orders-overlay">
+        <div class="track-orders-modal gcash-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-mobile-alt"></i> Pay with GCash</h2>
+                <button class="close-btn" id="gcash-cancel-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="confirmation-body">
+                <p class="gcash-instr">Open your GCash app and scan the QR or send payment to the merchant number below.</p>
+                <div class="gcash-amount">Amount: <strong id="gcash-amount">₱0.00</strong></div>
+
+                <div class="gcash-row">
+                    <div class="gcash-merchant">
+                        <label>Merchant GCash Number</label>
+                        <div class="gcash-merchant-box">
+                            <span id="gcash-merchant-number">09XXXXXXXXX</span>
+                            <button class="copy-btn" id="gcash-copy-merchant">Copy</button>
+                        </div>
+                    </div>
+                    <div class="gcash-qr">
+                        <div class="qr-placeholder"><i class="fas fa-qrcode"></i></div>
+                    </div>
+                </div>
+
+                <p class="gcash-ref">Payment Reference: <code id="gcash-ref">-</code></p>
+
+                <div class="confirmation-actions">
+                    <button id="gcash-paid-btn" class="confirmation-ok-btn">I Have Paid</button>
+                    <button id="gcash-cancel-2" class="confirmation-ok-btn" style="background:transparent;color:var(--text-light);border:1px solid var(--border);margin-left:10px;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Promo modal overlay (hidden by default) -->
+    <div id="promo-modal-overlay" class="promo-modal-overlay" aria-hidden="true">
+        <div class="promo-modal" role="dialog" aria-modal="true" aria-labelledby="promo-title">
+            <div class="promo-header">
+                <div style="font-weight:700;color:var(--text);">Item details</div>
+                <button class="promo-close" id="promo-close" aria-label="Close">×</button>
+            </div>
+            <div class="promo-image"><img id="promo-image" src="" alt=""></div>
+            <div class="promo-body">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+                    <h3 id="promo-title" style="margin:0;color:var(--text);"></h3>
+                    <div id="promo-price" class="promo-price" style="font-weight:800;color:var(--primary);"></div>
+                </div>
+                <p id="promo-desc" style="color:var(--text-light);margin-top:0.6rem;">Description</p>
+
+                <!-- Quantity / controls follow the cart's structure -->
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.75rem;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;color:var(--text);font-weight:600;">Quantity
+                        <input id="promo-qty" type="number" min="1" value="1" style="width:72px;padding:0.35rem 0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+                    </label>
+                    <div style="flex:1"></div>
+                </div>
+
+                <div class="promo-actions" style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+                    <button id="promo-add-cart" class="add-to-cart" data-item-id="" aria-label="Add to cart">
+                        <i class="fas fa-plus"></i>
+                        <span style="margin-left:0.5rem;">Add to Cart</span>
+                    </button>
+                    <button id="promo-view-menu" class="nav-link" aria-label="View menu"><i class="fas fa-list"></i> View Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:var(--surface);border-top:1px solid var(--border);padding:2rem 1rem;margin-top:2rem;">
+        <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;align-items:start;">
+            <div>
+                <h4 style="color:var(--text);margin-bottom:0.5rem;">Contact</h4>
+                <p style="color:var(--text-light);margin:0">Phone: +63 905 570 2751</p>
+                <p style="color:var(--text-light);margin:0">Email: info@craveitclickit.example</p>
+                <p style="color:var(--text-light);margin:0">Address: Bagalangit, Mabini, Batangas</p>
+            </div>
+            <div>
+                <h4 style="color:var(--text);margin-bottom:0.5rem;">Specials</h4>
+                <ul style="list-style:none;padding:0;margin:0;color:var(--text-light)">
+                    <li><a href="#specials" style="color:var(--primary);">Current Deals</a></li>
+                    <li><a href="#menu" style="color:var(--text-light);">Bundle Promos</a></li>
+                    <li><a href="#menu" style="color:var(--text-light);">Limited Offers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color:var(--text);margin-bottom:0.5rem;">Quick Links</h4>
+                <ul style="list-style:none;padding:0;margin:0;color:var(--text-light)">
+                    <li><a href="index.html" style="color:var(--text-light);">Home</a></li>
+                    <li><a href="#menu" style="color:var(--text-light);">Menu</a></li>
+                    <li><a href="#location-overlay" style="color:var(--text-light);">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color:var(--text);margin-bottom:0.5rem;">Legal</h4>
+                <ul style="list-style:none;padding:0;margin:0;color:var(--text-light)">
+                    <li><a href="terms.html" style="color:var(--text-light);">Terms & Conditions</a></li>
+                    <li><a href="privacy.html" style="color:var(--text-light);">Privacy Policy</a></li>
+                </ul>
+                <div style="margin-top:0.75rem;color:var(--text-light);">Follow us:</div>
+                <div style="margin-top:0.5rem;display:flex;gap:0.5rem;">
+                    <a href="#" aria-label="Facebook" style="color:var(--text-light);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Instagram" style="color:var(--text-light);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="TikTok" style="color:var(--text-light);"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div style="max-width:1200px;margin:1rem auto 0 auto;color:var(--text-light);font-size:0.95rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+            <div>© CraveItClickIt — Bagalangit, Mabini, Batangas</div>
+            <div><a href="login.html" style="color:var(--text-light);">Sign In</a></div>
+        </div>
+    </footer>
+    <script src="customer.js"></script>
+    <script>
+        (function(){
+            const overlay = document.getElementById('promo-modal-overlay');
+            const img = document.getElementById('promo-image');
+            const title = document.getElementById('promo-title');
+            const price = document.getElementById('promo-price');
+            const desc = document.getElementById('promo-desc');
+            const qtyInput = document.getElementById('promo-qty');
+            const addBtn = document.getElementById('promo-add-cart');
+            const viewBtn = document.getElementById('promo-view-menu');
+            const closeBtn = document.getElementById('promo-close');
+            let activeItemId = null;
+
+            function openModal(data){
+                activeItemId = (typeof data.itemId !== 'undefined') ? Number(data.itemId) : (data['item-id'] ? Number(data['item-id']) : null);
+                img.src = data.image || '';
+                img.alt = data.name || '';
+                title.textContent = data.name || '';
+                price.textContent = data.price ? '₱' + Number(data.price).toFixed(2) : '';
+                desc.textContent = data.desc || '';
+                // populate quantity and data attributes
+                try { qtyInput.value = data.quantity && Number(data.quantity) > 0 ? Number(data.quantity) : 1; } catch(e) { if(qtyInput) qtyInput.value = 1; }
+                if(addBtn) addBtn.dataset.itemId = activeItemId;
+                overlay.classList.add('open');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeModal(){
+                overlay.classList.remove('open');
+                overlay.setAttribute('aria-hidden', 'true');
+                activeItemId = null;
+            }
+
+            document.addEventListener('click', function(e){
+                const btn = e.target.closest('.order-now-btn');
+                if(btn){
+                    e.preventDefault();
+                    const data = {
+                        itemId: Number(btn.dataset.itemId),
+                        name: btn.dataset.name,
+                        price: btn.dataset.price,
+                        image: btn.dataset.image
+                    };
+                    openModal(data);
+                }
+            });
+
+            overlay.addEventListener('click', function(e){
+                if(e.target === overlay) closeModal();
+            });
+            closeBtn.addEventListener('click', closeModal);
+
+            addBtn.addEventListener('click', function(){
+                const qty = Math.max(1, Number(qtyInput?.value || 1));
+                if(window.customerApp && typeof window.customerApp.addToCart === 'function' && activeItemId){
+                    // If customerApp supports quantity natively, prefer calling it multiple times
+                    try {
+                        for(let i=0;i<qty;i++) window.customerApp.addToCart(activeItemId);
+                        // trigger the same visual feedback on the promo add button (reuse helper)
+                        const btnForAnim = addBtn;
+                        if(window.customerApp && typeof window.customerApp.showAddToCartAnimation === 'function') {
+                            window.customerApp.showAddToCartAnimation(btnForAnim);
+                        }
+                        closeModal();
+                    } catch(e){
+                        console.warn('Error adding via customerApp', e);
+                    }
+                    return;
+                }
+
+                // Fallback: store item(s) in localStorage cart
+                const cart = JSON.parse(localStorage.getItem('craveitclickit_cart')||'[]');
+                const parsedPrice = Number((price.textContent||'').replace(/[^0-9.]/g,'')) || 0;
+                const item = { id: activeItemId, name: title.textContent, price: parsedPrice, quantity: qty };
+                const existing = cart.find(i=>i.id===item.id);
+                if(existing) existing.quantity = (existing.quantity||0) + qty;
+                else cart.push(item);
+                localStorage.setItem('craveitclickit_cart', JSON.stringify(cart));
+                closeModal();
+                // Visual feedback: try to reuse customerApp animation if available
+                if(window.customerApp && typeof window.customerApp.showAddToCartAnimation === 'function') {
+                    window.customerApp.showAddToCartAnimation(addBtn);
+                } else {
+                    alert(item.name + ' added to cart');
+                }
+            });
+
+            viewBtn.addEventListener('click', function(){
+                closeModal();
+                const menu = document.getElementById('menu');
+                if(menu) menu.scrollIntoView({behavior:'smooth'});
+
+                // Also highlight the header Menu nav link to match the site navigation
+                try {
+                    const headerMenuLink = document.querySelector('.top-nav .nav-link[href="#menu"]');
+                    if (headerMenuLink) {
+                        headerMenuLink.classList.add('active');
+                        setTimeout(() => headerMenuLink.classList.remove('active'), 1800);
+                    }
+                } catch (e) { /* ignore if header not present */ }
+            });
+        })();
+    </script>
+</body>
+</html>
