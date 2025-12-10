@@ -956,11 +956,6 @@ body {
     gap: 1rem;
 }
 
-.chart-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-}
 
 .chart-panel {
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -997,3 +992,4 @@ body {
     border: 1px dashed var(--border);
     border-radius: 8px;
 }
+
